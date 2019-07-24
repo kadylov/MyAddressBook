@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">MyAddressBook</string>
+    <string name="lblAddContact">Add Contact</string>
+    <string name="hint_phone">Phone</string>
+    <string name="hint_lastName">Last name</string>
+    <string name="hint_first_name">First name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_street">Street</string>
+    <string name="hint_city">City</string>
+    <string name="hint_state">State</string>
+    <string name="hint_zip">Zip</string>
+    <string name="btn_create">Create</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="lbl_addPhoto">Add Photo</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_main_menu">Main Menu</string>
+
+
+    <string-array name="phoneTypeList">
+        <item>Cell</item>
+        <item>Home</item>
+        <item>Work</item>
+    </string-array>
+</resources>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgBtn"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/profile_image"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:baselineAlignBottom="true"
+                android:clickable="true"/>
+
+
+            <EditText
+                android:id="@+id/txtFirstName"
+                android:hint="@string/hint_first_name"
+
+                style="@style/MarginForEditText"
+
+                android:drawableLeft="@drawable/ic_person_black_24dp"
+                android:drawableStart="@drawable/ic_person_black_24dp"
+
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName|textCapWords"/>
+
+            <EditText
+                android:id="@+id/txtLastName"
+
+                style="@style/MarginForEditText"
+
+                android:drawableLeft="@drawable/ic_person_add_black_24dp"
+                android:drawableStart="@drawable/ic_person_add_black_24dp"
+
+                android:hint="@string/hint_lastName"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName|textCapWords"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/txtPhoneNumber"
+                    android:ems="10"
+                    android:hint="@string/hint_phone"
+                    style="@style/MarginForEditText"
+
+                    android:drawableLeft="@drawable/ic_phone_black_24dp"
+                    android:drawableStart="@drawable/ic_phone_black_24dp"
+
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"/>
+
+
+                <Spinner
+                    android:id="@+id/spnrPhoneType"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/round_edges"
+                    android:ems="10"
+                    android:padding="10dp"
+                    android:entries="@array/phoneTypeList"/>
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/txtEmail"
+                style="@style/MarginForEditText"
+
+                android:drawableLeft="@drawable/ic_email_black_24dp"
+                android:drawableStart="@drawable/ic_email_black_24dp"
+
+                android:hint="@string/hint_email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"/>
+
+            <EditText
+                android:id="@+id/txtStreet"
+                style="@style/MarginForEditText"
+
+                android:drawableLeft="@drawable/ic_streetview_black_24dp"
+                android:drawableStart="@drawable/ic_streetview_black_24dp"
+
+                android:hint="@string/hint_street"
+                android:imeOptions="actionNext"
+                android:inputType="text|textPostalAddress|textCapWords"/>
+
+            <EditText
+                android:id="@+id/txtCity"
+                style="@style/MarginForEditText"
+
+                android:drawableLeft="@drawable/ic_location_city_black_24dp"
+                android:drawableStart="@drawable/ic_location_city_black_24dp"
+
+                android:hint="@string/hint_city"
+                android:imeOptions="actionNext"
+                android:inputType="textShortMessage|text|textPostalAddress|textCapWords"/>
+
+            <EditText
+                android:id="@+id/txtState"
+                style="@style/MarginForEditText"
+
+                android:drawableLeft="@drawable/ic_state"
+                android:drawableStart="@drawable/ic_state"
+
+                android:hint="@string/hint_state"
+                android:imeOptions="actionNext"
+                android:inputType="text|textPostalAddress|textCapWords"/>
+
+            <EditText
+                android:id="@+id/txtZip"
+                android:hint="@string/hint_zip"
+                android:imeOptions="actionDone"
+
+                style="@style/MarginForEditText"
+
+                android:drawableLeft="@drawable/ic_zipcode"
+                android:drawableStart="@drawable/ic_zipcode"
+
+                android:inputType="number"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+                <Button
+                    android:id="@+id/btnEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_create"
+                    android:layout_marginRight="5dp"/>
+
+                <Button
+                    android:id="@+id/btnMainMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_cancel"
+                    android:layout_marginLeft="5dp"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</RelativeLayout>

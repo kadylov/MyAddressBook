@@ -12,18 +12,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--<ImageButton-->
-            <!--android:id="@+id/imgBtn"-->
-            <!--android:layout_width="140dp"-->
-            <!--android:layout_height="140dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginBottom="30dp"-->
-            <!--android:baselineAlignBottom="true"-->
-            <!--android:clickable="true"-->
-            <!--android:src="@drawable/circle_shape" />-->
-
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgBtn"
+                android:id="@+id/profileImageCircleView"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_gravity="center_horizontal"
@@ -34,35 +24,16 @@
 
 
             <EditText
-                android:id="@+id/txtFirstName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/round_edges"
-                android:ems="10"
+                android:id="@+id/txtFullName"
+                style="@style/MarginForEditText"
+
+                android:drawableStart="@drawable/ic_person_black_24dp"
+
+                android:drawableLeft="@drawable/ic_person_black_24dp"
                 android:hint="@string/hint_first_name"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapWords"
-                android:padding="10dp" />
 
-
-            <EditText
-                android:id="@+id/txtLastName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/round_edges"
-                android:ems="10"
-                android:hint="@string/hint_lastName"
                 android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapWords"
-                android:padding="10dp" />
+                android:inputType="textPersonName|textCapWords" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -71,18 +42,16 @@
 
                 <EditText
                     android:id="@+id/txtPhoneNumber"
+                    style="@style/MarginForEditText"
+
                     android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/round_edges"
-                    android:ems="10"
+                    android:layout_marginRight="5dp"
+                    android:drawableStart="@drawable/ic_phone_black_24dp"
+                    android:drawableLeft="@drawable/ic_phone_black_24dp"
+
                     android:hint="@string/hint_phone"
                     android:imeOptions="actionNext"
-                    android:inputType="phone"
-                    android:padding="10dp" />
+                    android:inputType="phone" />
 
 
                 <Spinner
@@ -102,85 +71,66 @@
 
             <EditText
                 android:id="@+id/txtEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/round_edges"
-                android:ems="10"
+                style="@style/MarginForEditText"
+
+                android:drawableStart="@drawable/ic_email_black_24dp"
+                android:drawableLeft="@drawable/ic_email_black_24dp"
+
                 android:hint="@string/hint_email"
                 android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:padding="10dp" />
+                android:inputType="textEmailAddress" />
 
             <EditText
                 android:id="@+id/txtStreet"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/round_edges"
-                android:ems="10"
+                style="@style/MarginForEditText"
+
+                android:drawableStart="@drawable/ic_streetview_black_24dp"
+                android:drawableLeft="@drawable/ic_streetview_black_24dp"
+
                 android:hint="@string/hint_street"
                 android:imeOptions="actionNext"
-                android:inputType="text|textPostalAddress|textCapWords"
-                android:padding="10dp" />
+                android:inputType="text|textPostalAddress|textCapWords" />
 
             <EditText
                 android:id="@+id/txtCity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/round_edges"
-                android:ems="10"
+                style="@style/MarginForEditText"
+
+                android:drawableStart="@drawable/ic_location_city_black_24dp"
+                android:drawableLeft="@drawable/ic_location_city_black_24dp"
+
                 android:hint="@string/hint_city"
                 android:imeOptions="actionNext"
-                android:inputType="textShortMessage|text|textPostalAddress|textCapWords"
-                android:padding="10dp" />
+                android:inputType="textShortMessage|text|textPostalAddress|textCapWords" />
 
             <EditText
                 android:id="@+id/txtState"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/round_edges"
-                android:ems="10"
+                style="@style/MarginForEditText"
+
+                android:drawableStart="@drawable/ic_state"
+                android:drawableLeft="@drawable/ic_state"
+
                 android:hint="@string/hint_state"
                 android:imeOptions="actionNext"
-                android:inputType="text|textPostalAddress|textCapWords"
-                android:padding="10dp" />
+                android:inputType="text|textPostalAddress|textCapWords" />
 
             <EditText
                 android:id="@+id/txtZip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/round_edges"
-                android:ems="10"
+                style="@style/MarginForEditText"
+                android:drawableStart="@drawable/ic_zipcode"
+
+                android:drawableLeft="@drawable/ic_zipcode"
+
                 android:hint="@string/hint_zip"
                 android:imeOptions="actionDone"
-                android:inputType="number"
-                android:padding="10dp" />
+
+                android:inputType="number" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="15dp"
                 android:orientation="horizontal">
 
                 <Button
@@ -189,6 +139,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/btn_edit" />
+
+                <Button
+                    android:id="@+id/btnUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/btn_update"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btnMainMenu"

@@ -14,6 +14,7 @@
     <string name="lbl_addPhoto">Add Photo</string>
     <string name="btn_edit">Edit</string>
     <string name="btn_main_menu">Main Menu</string>
+    <string name="btn_update">Update</string>
 
 
     <string-array name="phoneTypeList">

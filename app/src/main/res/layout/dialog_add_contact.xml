@@ -1,51 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgBtn"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:src="@drawable/profile_image"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:baselineAlignBottom="true"
-                android:clickable="true"/>
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImageCircleView"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
+                android:clickable="true"
+                android:src="@drawable/profile_image" />
 
             <EditText
-                android:id="@+id/txtFirstName"
-                android:hint="@string/hint_first_name"
-
+                android:id="@+id/txtFullName"
                 style="@style/MarginForEditText"
 
-                android:drawableLeft="@drawable/ic_person_black_24dp"
                 android:drawableStart="@drawable/ic_person_black_24dp"
 
+                android:drawableLeft="@drawable/ic_person_black_24dp"
+                android:hint="@string/hint_first_name"
+
                 android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapWords"/>
-
-            <EditText
-                android:id="@+id/txtLastName"
-
-                style="@style/MarginForEditText"
-
-                android:drawableLeft="@drawable/ic_person_add_black_24dp"
-                android:drawableStart="@drawable/ic_person_add_black_24dp"
-
-                android:hint="@string/hint_lastName"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapWords"/>
+                android:inputType="textPersonName|textCapWords" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,15 +42,17 @@
 
                 <EditText
                     android:id="@+id/txtPhoneNumber"
-                    android:ems="10"
-                    android:hint="@string/hint_phone"
                     style="@style/MarginForEditText"
 
-                    android:drawableLeft="@drawable/ic_phone_black_24dp"
-                    android:drawableStart="@drawable/ic_phone_black_24dp"
+                    android:layout_width="200dp"
+                    android:layout_marginRight="5dp"
 
+                    android:drawableStart="@drawable/ic_phone_black_24dp"
+                    android:drawableLeft="@drawable/ic_phone_black_24dp"
+
+                    android:hint="@string/hint_phone"
                     android:imeOptions="actionNext"
-                    android:inputType="phone"/>
+                    android:inputType="phone" />
 
 
                 <Spinner
@@ -75,8 +65,8 @@
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/round_edges"
                     android:ems="10"
-                    android:padding="10dp"
-                    android:entries="@array/phoneTypeList"/>
+                    android:entries="@array/phoneTypeList"
+                    android:padding="10dp" />
 
             </LinearLayout>
 
@@ -84,80 +74,81 @@
                 android:id="@+id/txtEmail"
                 style="@style/MarginForEditText"
 
-                android:drawableLeft="@drawable/ic_email_black_24dp"
                 android:drawableStart="@drawable/ic_email_black_24dp"
+                android:drawableLeft="@drawable/ic_email_black_24dp"
 
                 android:hint="@string/hint_email"
                 android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"/>
+                android:inputType="textEmailAddress" />
 
             <EditText
                 android:id="@+id/txtStreet"
                 style="@style/MarginForEditText"
 
-                android:drawableLeft="@drawable/ic_streetview_black_24dp"
                 android:drawableStart="@drawable/ic_streetview_black_24dp"
+                android:drawableLeft="@drawable/ic_streetview_black_24dp"
 
                 android:hint="@string/hint_street"
                 android:imeOptions="actionNext"
-                android:inputType="text|textPostalAddress|textCapWords"/>
+                android:inputType="text|textPostalAddress|textCapWords" />
 
             <EditText
                 android:id="@+id/txtCity"
                 style="@style/MarginForEditText"
 
-                android:drawableLeft="@drawable/ic_location_city_black_24dp"
                 android:drawableStart="@drawable/ic_location_city_black_24dp"
+                android:drawableLeft="@drawable/ic_location_city_black_24dp"
 
                 android:hint="@string/hint_city"
                 android:imeOptions="actionNext"
-                android:inputType="textShortMessage|text|textPostalAddress|textCapWords"/>
+                android:inputType="textShortMessage|text|textPostalAddress|textCapWords" />
 
             <EditText
                 android:id="@+id/txtState"
                 style="@style/MarginForEditText"
 
-                android:drawableLeft="@drawable/ic_state"
                 android:drawableStart="@drawable/ic_state"
+                android:drawableLeft="@drawable/ic_state"
 
                 android:hint="@string/hint_state"
                 android:imeOptions="actionNext"
-                android:inputType="text|textPostalAddress|textCapWords"/>
+                android:inputType="text|textPostalAddress|textCapWords" />
 
             <EditText
                 android:id="@+id/txtZip"
+                style="@style/MarginForEditText"
+                android:drawableStart="@drawable/ic_zipcode"
+
+                android:drawableLeft="@drawable/ic_zipcode"
+
                 android:hint="@string/hint_zip"
                 android:imeOptions="actionDone"
 
-                style="@style/MarginForEditText"
-
-                android:drawableLeft="@drawable/ic_zipcode"
-                android:drawableStart="@drawable/ic_zipcode"
-
-                android:inputType="number"/>
+                android:inputType="number" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
+                android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btnEdit"
+                    android:id="@+id/btnAdd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_create"
-                    android:layout_marginRight="5dp"/>
+                    android:layout_marginRight="5dp"
+                    android:text="add" />
 
                 <Button
-                    android:id="@+id/btnMainMenu"
+                    android:id="@+id/btnCancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_cancel"
-                    android:layout_marginLeft="5dp"/>
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/btn_cancel" />
 
             </LinearLayout>
-
 
 
         </LinearLayout>
@@ -166,4 +157,4 @@
     </ScrollView>
 
 
-</RelativeLayout>
+</LinearLayout>

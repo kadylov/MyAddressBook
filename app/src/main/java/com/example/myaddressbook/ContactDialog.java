@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,10 +11,9 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -24,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public abstract class Dialog extends DialogFragment {
+public abstract class ContactDialog extends DialogFragment {
 
     final int TAKE_PHOTO = 0;
     final int CHOOSE_FROM_GALLERY = 1;
@@ -32,8 +30,7 @@ public abstract class Dialog extends DialogFragment {
 
     private CircleImageView imgBtn;
 
-    private EditText txtFirstName;
-    private EditText txtLastName;
+    private EditText txtFullName;
     private EditText txtPhoneNumber;
     private Spinner spnrPhoneType;
     private EditText txtEmail;
@@ -42,50 +39,42 @@ public abstract class Dialog extends DialogFragment {
     private EditText txtState;
     private EditText txtZip;
 
-    private AlertDialog.Builder builder ;
-    private View dialogView;
 
+    private LinearLayout buttonLayout;
+
+    private AlertDialog.Builder builder;
+    private View dialogView;
     private Activity activity;
 
-    public Dialog(Activity activity){
-        this.activity=activity;
-        init();
+    private LayoutInflater inflater;
 
+    public ContactDialog(Activity activity, int inflaterResource) {
 
-        imgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showImageOptionDialog();
-            }
-        });
-    }
-    @Override
-    public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        init();
-
-        imgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showImageOptionDialog();
-            }
-        });
-
-        return builder.create();
-    }
-
-
-    public void init() {
-
+        this.activity = activity;
         builder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater = activity.getLayoutInflater();
-        dialogView = inflater.inflate(R.layout.dialog_add_contact, null);
-        builder.setView(dialogView).setMessage(" ");
 
-        imgBtn = dialogView.findViewById(R.id.imgBtn);
+        inflater = activity.getLayoutInflater();
+        dialogView = inflater.inflate(inflaterResource, null);
+        init();
+        builder.setView(dialogView).setMessage("asasdsadsadasd ");
 
-        txtFirstName = dialogView.findViewById(R.id.txtFirstName);
-        txtLastName = dialogView.findViewById(R.id.txtLastName);
+        imgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showImageOptionDialog();
+            }
+        });
+    }
+
+    @Override
+    public abstract android.app.Dialog onCreateDialog(Bundle savedInstanceState);
+
+
+    private void init() {
+
+        imgBtn = dialogView.findViewById(R.id.profileImageCircleView);
+
+        txtFullName = dialogView.findViewById(R.id.txtFullName);
         txtPhoneNumber = dialogView.findViewById(R.id.txtPhoneNumber);
         spnrPhoneType = dialogView.findViewById(R.id.spnrPhoneType);
         txtEmail = dialogView.findViewById(R.id.txtEmail);
@@ -95,7 +84,6 @@ public abstract class Dialog extends DialogFragment {
         txtZip = dialogView.findViewById(R.id.txtZip);
 
     }
-
 
 
     private void showImageOptionDialog() {
@@ -172,17 +160,12 @@ public abstract class Dialog extends DialogFragment {
 
     }
 
-
     public CircleImageView getImageButton() {
         return imgBtn;
     }
 
-    public EditText     getEditTextFirstName() {
-        return txtFirstName;
-    }
-
-    public EditText getEditTextLastName() {
-        return txtLastName;
+    public EditText getEditTextFulltName() {
+        return txtFullName;
     }
 
     public EditText getEditTextPhoneNumber() {
@@ -219,5 +202,13 @@ public abstract class Dialog extends DialogFragment {
 
     public View getDialogView() {
         return dialogView;
+    }
+
+    public LinearLayout getButtonLayout() {
+        return buttonLayout;
+    }
+
+    public CircleImageView getProfileImage() {
+        return imgBtn;
     }
 }

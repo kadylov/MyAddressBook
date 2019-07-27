@@ -1,5 +1,7 @@
 package com.example.myaddressbook;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,8 +45,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
 
         Contact c = listOfContacts.get(position);
         holder.txtContactName.setText(c.getFullName());
-        holder.profileImage.setImageResource(R.drawable.profile_image);
+//        holder.profileImage.setImageResource(R.drawable.profile_image);
 
+        byte [] img = c.getProfileImage();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(img,0, img.length);
+         holder.profileImage.setImageBitmap(bitmap);
     }
 
     @Override

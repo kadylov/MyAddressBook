@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,22 +22,25 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private List<Contact> listOfContacts;
 
-    private List<Contact> listOfContacts = new ArrayList<Contact>();
-    ;
     private EditText mSearchTxt;
     private FloatingActionButton fBtnAddContact;
 
-
     private ContactAdapter contactAdapter;
     private RecyclerView recyclerView;
+
+    private DataManager dataManager;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        listOfContacts = new ArrayList<Contact>();
+        dataManager = new DataManager(this);
+
 
         mSearchTxt = findViewById(R.id.searchTxt);
         fBtnAddContact = findViewById(R.id.fBtnAddContact);
@@ -57,45 +61,49 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Log.d(TAG, "in float button listener");
-                NewContactDialog newContact = new NewContactDialog(MainActivity.this);
+                ContactDialog newContact = new NewContactDialog(MainActivity.this);
                 newContact.show(getSupportFragmentManager(), "");
 
             }
         });
 
         Log.d(TAG, "onCreate started.");
-        createNewContact(null);
+        reloadData();
 
     }
 
     public void showContact(int contactToShow) {
-        ContactDialog dialog = new ViewContactDialog(this);
+        ContactDialog dialog = new ViewContactDialog(MainActivity.this);
         ((ViewContactDialog) dialog).sendSelectedContact(listOfContacts.get(contactToShow));
         dialog.show(getSupportFragmentManager(), "");
     }
 
-    public void updateContact(Contact contact) {
+    public void updateContact(Contact contact, String contactOldName) {
+
+        dataManager.update(contact,contactOldName);
 
         listOfContacts.clear();
-        listOfContacts.add(contact);
-        contactAdapter.notifyDataSetChanged();
-//        reloadData();
+        reloadData();
 
     }
 
     public void createNewContact(Contact contact) {
-        Contact c = new Contact("Kamil Adylov", new PhoneNumber("3035064789", PhoneNumber.CELL));
-        String s = "\"https:/i.redd.it/tpsnoz5bzo501.jpg\"";
-        Uri uri = Uri.parse("https:/i.redd.it/tpsnoz5bzo501.jpg");
-
-
-        c.setProfileImage(s);
-        listOfContacts.add(c);
         if (contact != null) {
-            listOfContacts.add(contact);
-            contactAdapter.notifyDataSetChanged();
-//            reloadData();
+            String name = contact.getFullName();
 
+            String phone = contact.getPrimaryPhoneNumber().getPhoneNumber();
+            String phoneType = Integer.toString(contact.getPrimaryPhoneNumber().getPhoneNumberType());
+            String email = contact.getEmail();
+
+            String street = contact.getPrimaryAddress().getStreet();
+            String city = contact.getPrimaryAddress().getCity();
+            String state = contact.getPrimaryAddress().getState();
+            String zip = contact.getPrimaryAddress().getZipCode();
+            byte[] profileImage = contact.getProfileImage();
+
+            dataManager.insert(name, phone, phoneType, email, street, city, state, zip, profileImage);
+
+            reloadData();
         }
 
 
@@ -104,6 +112,38 @@ public class MainActivity extends AppCompatActivity {
 
     public void reloadData() {
         listOfContacts.clear();
+
+        Cursor cursor = dataManager.selectAll();
+
+        int contactCount = cursor.getCount();
+
+        Log.i("info", "Number of contact " + contactCount);
+        int i = 0;
+        if (contactCount > 0) {
+            listOfContacts.clear();
+
+            while (cursor.moveToNext()) {
+                i = 1;
+                String name = cursor.getString(i++);
+                String phone = cursor.getString(i++);
+                String phoneType = cursor.getString(i++);
+                String email = cursor.getString(i++);
+
+                String street = cursor.getString(i++);
+                String city = cursor.getString(i++);
+                String state = cursor.getString(i++);
+                String zip = cursor.getString(i++);
+                byte[] profileImage = cursor.getBlob(i++);
+
+
+
+                Contact contact = new Contact(name, new PhoneNumber(phone, Integer.parseInt(phoneType)), email, new Address(street, city, state, zip), profileImage);
+
+                listOfContacts.add(contact);
+            }
+            contactAdapter.notifyDataSetChanged();
+
+        }
 
     }
 }

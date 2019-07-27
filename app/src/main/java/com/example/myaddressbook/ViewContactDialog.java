@@ -1,10 +1,16 @@
 package com.example.myaddressbook;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import androidx.appcompat.app.AlertDialog;
 
 
 public class ViewContactDialog extends ContactDialog {
@@ -14,6 +20,7 @@ public class ViewContactDialog extends ContactDialog {
     private Button btnUpdate;
 
     private Contact contact;
+    private String oldContactName;
 
     private static final int xmlResource = R.layout.dialog_view_contact;
 
@@ -58,11 +65,14 @@ public class ViewContactDialog extends ContactDialog {
 
         loadData();
         enableAll(false);
+
         return getBuilder().create();
     }
 
     private void loadData() {
-        getEditTextFulltName().setText(contact.getFullName());
+        String fullname = contact.getFullName();
+        oldContactName = fullname;
+        getEditTextFulltName().setText(fullname);
 
         if (contact.getNumberOfPhoneNumbers() > 0) {
             PhoneNumber phone = contact.getPrimaryPhoneNumber();
@@ -78,12 +88,20 @@ public class ViewContactDialog extends ContactDialog {
             getEditTextCity().setText(address.getCity());
             getEditTextState().setText(address.getState());
             getEditTextZip().setText(address.getZipCode());
+        }
 
+        byte[] profileImage = contact.getProfileImage();
+        if (profileImage != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(profileImage, 0, profileImage.length);
+            getCircleViewProfileImage().setImageBitmap(bitmap);
         }
     }
 
 
     public void enableAll(boolean flag) {
+
+        // disable profile image Image view
+        getCircleViewProfileImage().setClickable(flag);
 
         // disable full name text field
         getEditTextFulltName().setEnabled(flag);
@@ -145,7 +163,11 @@ public class ViewContactDialog extends ContactDialog {
         contact.updateAddress(newAddress);
         contact.updatePhoneNumber(newPhoneNumber);
 
+        byte[] profileImg = getProfileImageInBytes();
+
+        contact.setProfileImage(profileImg);
+
         MainActivity callingActivity = (MainActivity) getActivity();
-        callingActivity.updateContact(contact);
+        callingActivity.updateContact(contact, oldContactName);
     }
 }

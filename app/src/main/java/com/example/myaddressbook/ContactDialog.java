@@ -4,18 +4,27 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -24,8 +33,8 @@ import static android.app.Activity.RESULT_OK;
 
 public abstract class ContactDialog extends DialogFragment {
 
-    final int TAKE_PHOTO = 0;
-    final int CHOOSE_FROM_GALLERY = 1;
+    private final int TAKE_PHOTO = 0;
+    private final int CHOOSE_FROM_GALLERY = 1;
 
 
     private CircleImageView imgBtn;
@@ -40,13 +49,12 @@ public abstract class ContactDialog extends DialogFragment {
     private EditText txtZip;
 
 
-    private LinearLayout buttonLayout;
-
     private AlertDialog.Builder builder;
     private View dialogView;
-    private Activity activity;
 
     private LayoutInflater inflater;
+
+    private Activity activity;
 
     public ContactDialog(Activity activity, int inflaterResource) {
 
@@ -56,14 +64,15 @@ public abstract class ContactDialog extends DialogFragment {
         inflater = activity.getLayoutInflater();
         dialogView = inflater.inflate(inflaterResource, null);
         init();
-        builder.setView(dialogView).setMessage("asasdsadsadasd ");
 
+        builder.setView(dialogView).setMessage("");
         imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showImageOptionDialog();
             }
         });
+
     }
 
     @Override
@@ -129,6 +138,7 @@ public abstract class ContactDialog extends DialogFragment {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -140,18 +150,27 @@ public abstract class ContactDialog extends DialogFragment {
                     if (resultCode == RESULT_OK) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
 
-                        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), selectedImage);
-                        imgBtn.setBackground(bitmapDrawable);
+//                        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), selectedImage);
+//                        imgBtn.setBackground(bitmapDrawable);
+                        imgBtn.setImageBitmap(selectedImage);
                     }
                     break;
 
                 case CHOOSE_FROM_GALLERY:
                     if (resultCode == RESULT_OK) {
 
-                        Uri selectedImage = data.getData();
-                        if (selectedImage != null) {
-                            imgBtn.setImageURI(selectedImage);
+                        Uri imgUri = data.getData();
+//                        if (selectedImage != null) {
+//                            imgBtn.setImageURI(selectedImage);
+//                        }
+
+                        Bitmap imgBitmap = null;
+                        try {
+                            imgBitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imgUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
+                        imgBtn.setImageBitmap(imgBitmap);
 
                     }
                     break;
@@ -160,8 +179,15 @@ public abstract class ContactDialog extends DialogFragment {
 
     }
 
-    public CircleImageView getImageButton() {
-        return imgBtn;
+    public byte[] getProfileImageInBytes() {
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) imgBtn.getDrawable();
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] array = stream.toByteArray();
+
+        return array;
     }
 
     public EditText getEditTextFulltName() {
@@ -204,11 +230,7 @@ public abstract class ContactDialog extends DialogFragment {
         return dialogView;
     }
 
-    public LinearLayout getButtonLayout() {
-        return buttonLayout;
-    }
-
-    public CircleImageView getProfileImage() {
+    public CircleImageView getCircleViewProfileImage() {
         return imgBtn;
     }
 }

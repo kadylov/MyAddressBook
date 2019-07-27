@@ -78,14 +78,18 @@ public class NewContactDialog extends ContactDialog {
         address.setCity(getEditTextState().getText().toString());
         address.setZipCode(getEditTextStreet().getText().toString());
 
+        byte[] profileImg = getProfileImageInBytes();
 
         MainActivity callingActivity = (MainActivity) getActivity();
 
         if (fullname == null || fullname.equals(""))
             callingActivity.createNewContact(null);
-        else
-            callingActivity.createNewContact(new Contact(fullname, phoneNumber, email, address, getProfileImage().toString()));
+        else {
 
+
+            callingActivity.createNewContact(new Contact(fullname, phoneNumber, email, address, profileImg));
+
+        }
     }
 
 

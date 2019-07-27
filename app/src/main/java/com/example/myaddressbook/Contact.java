@@ -1,16 +1,13 @@
 package com.example.myaddressbook;
 
-import android.net.Uri;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Contact implements Comparable<Contact> {
 
     private String fullName = "";
     private String email = "";
-    private String profileImage = "";
+    private byte[] profileImage = {0};
 
     private List<PhoneNumber> listOfPhoneNumbers = new ArrayList<PhoneNumber>();
     private List<Address> listOfAddresses = new ArrayList<Address>();
@@ -24,7 +21,7 @@ public class Contact implements Comparable<Contact> {
         listOfPhoneNumbers.add(phoneNumber);
     }
 
-    public Contact(String fullName, PhoneNumber phoneNumber, String email, Address address, String profileImage) {
+    public Contact(String fullName, PhoneNumber phoneNumber, String email, Address address, byte[] profileImage) {
         this.fullName = fullName;
         listOfPhoneNumbers.add(phoneNumber);
         this.email = email;
@@ -105,17 +102,22 @@ public class Contact implements Comparable<Contact> {
         this.listOfAddresses = listOfAddresses;
     }
 
-    public String getProfileImage() {
+    public byte[] getProfileImage() {
         return profileImage;
     }
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+    public void setProfileImage(byte[] profileImage) {
+        if (profileImage != null)
+            this.profileImage = profileImage;
     }
 
 
     public PhoneNumber getPrimaryPhoneNumber() {
         return listOfPhoneNumbers.get(0);
+    }
+
+    public Address getPrimaryAddress() {
+        return listOfAddresses.get(0);
     }
 
 

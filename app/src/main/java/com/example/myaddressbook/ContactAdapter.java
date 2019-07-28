@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,9 +46,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
         holder.txtContactName.setText(c.getFullName());
 //        holder.profileImage.setImageResource(R.drawable.profile_image);
 
-        byte [] img = c.getProfileImage();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(img,0, img.length);
-         holder.profileImage.setImageBitmap(bitmap);
+        byte[] img = c.getProfileImage();
+        if (img != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+            holder.profileImage.setImageBitmap(bitmap);
+        }
     }
 
     @Override

@@ -107,7 +107,6 @@ public class Contact implements Comparable<Contact> {
     }
 
     public void setProfileImage(byte[] profileImage) {
-        if (profileImage != null)
             this.profileImage = profileImage;
     }
 

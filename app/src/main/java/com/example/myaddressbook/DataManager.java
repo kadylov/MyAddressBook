@@ -87,7 +87,8 @@ public class DataManager {
         st.bindString(6, city);
         st.bindString(7, state);
         st.bindString(8, zip);
-        st.bindBlob(9, profileImage);
+        if (profileImage != null)
+            st.bindBlob(9, profileImage);
         st.executeInsert();
 
 

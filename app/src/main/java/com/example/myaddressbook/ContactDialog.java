@@ -1,11 +1,10 @@
 package com.example.myaddressbook;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -14,16 +13,18 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.yalantis.ucrop.UCrop;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -35,6 +36,9 @@ public abstract class ContactDialog extends DialogFragment {
 
     private final int TAKE_PHOTO = 0;
     private final int CHOOSE_FROM_GALLERY = 1;
+    private final int CROP_IMAGE = 2;
+
+    private Uri imgUri;
 
 
     private CircleImageView imgBtn;
@@ -107,11 +111,11 @@ public abstract class ContactDialog extends DialogFragment {
 
                 switch (item) {
                     case TAKE_PHOTO:                // Take Photo
-                        takePictureFromCamera(TAKE_PHOTO);
+                        takePictureFromCamera();
                         break;
 
                     case CHOOSE_FROM_GALLERY:       // Choose from Gallery
-                        pickPhotoFromGallery(CHOOSE_FROM_GALLERY);
+                        pickPhotoFromGallery();
                         break;
 
                     default:                        // cancel
@@ -123,18 +127,19 @@ public abstract class ContactDialog extends DialogFragment {
         builder.show();
     }
 
-    private void pickPhotoFromGallery(int requestCode) {
+    private void pickPhotoFromGallery() {
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, requestCode);
+        startActivityForResult(photoPickerIntent, CHOOSE_FROM_GALLERY);
+
 
     }
 
-    private void takePictureFromCamera(int requestCode) {
+    private void takePictureFromCamera() {
 
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePicture, requestCode);
+        startActivityForResult(takePicture, TAKE_PHOTO);
     }
 
 
@@ -159,23 +164,67 @@ public abstract class ContactDialog extends DialogFragment {
                 case CHOOSE_FROM_GALLERY:
                     if (resultCode == RESULT_OK) {
 
-                        Uri imgUri = data.getData();
-//                        if (selectedImage != null) {
-//                            imgBtn.setImageURI(selectedImage);
-//                        }
-
+                        imgUri = data.getData();
                         Bitmap imgBitmap = null;
-                        try {
-                            imgBitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imgUri);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        imgBtn.setImageBitmap(imgBitmap);
+//                        try {
+//                            imgBitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imgUri);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        imgBtn.setImageBitmap(imgBitmap);
 
+                        cropImage(imgUri);
                     }
                     break;
+
+                case UCrop
+                        .REQUEST_CROP:
+                    if (resultCode == RESULT_OK) {
+
+                        final Uri uri = UCrop.getOutput(data);
+                        if (uri != null) {
+                            imgBtn.setImageURI(uri);
+                        }
+//                        imgBtn.setImageURI(uri);
+
+//                        Bitmap imgBitmap = null;
+//                        try {
+//                            imgBitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        imgBtn.setImageBitmap(imgBitmap);
+                    }
+                    break;
+
+                case UCrop.RESULT_ERROR: {
+                    Toast.makeText(activity, "uCrop error", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         }
+
+    }
+
+    private void cropImage(Uri uri) {
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(activity.getCacheDir(), "temp.jpg")));
+        uCrop.withMaxResultSize(400, 400).withOptions(getCropOptions());
+//        uCrop.start(getActivity());
+
+        startActivityForResult(uCrop.getIntent(getContext()), UCrop.REQUEST_CROP);
+
+    }
+
+    private UCrop.Options getCropOptions() {
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionQuality(20);
+        options.setCompressionFormat(Bitmap.CompressFormat.PNG);
+//        options.setHideBottomControls(false);
+        options.setFreeStyleCropEnabled(true);
+        options.setCircleDimmedLayer(true);
+
+        options.setToolbarTitle("Crop Image");
+        return options;
 
     }
 
@@ -183,12 +232,14 @@ public abstract class ContactDialog extends DialogFragment {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) imgBtn.getDrawable();
         Bitmap bitmap = bitmapDrawable.getBitmap();
 
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 1, stream);
         byte[] array = stream.toByteArray();
 
         return array;
     }
+
 
     public EditText getEditTextFulltName() {
         return txtFullName;

@@ -70,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate started.");
         reloadData();
 
+        ContactDialog cc = new NewContactDialog(this);
+        cc.show(getSupportFragmentManager(), "");
+
+
     }
 
     public void showContact(int contactToShow) {

@@ -22,7 +22,7 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
         this.phoneNumberType = phoneNumberType;
     }
 
-    public String getPhoneNumber() {
+    public String getNumber() {
         return phoneNumber;
     }
 
@@ -40,7 +40,7 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
 
     @Override
     public int compareTo(PhoneNumber otherNumber) {
-        if (this.phoneNumber == otherNumber.getPhoneNumber())
+        if (this.phoneNumber == otherNumber.getNumber())
             return 0;
 
         else return 1;

@@ -127,7 +127,7 @@ public class DataManager {
         Address a = c.getPrimaryAddress();
 
 //        try {
-//            final String UPDATE_CONTACT_QUERY = "update contact set  name='" + name + "' phone='" + p.getPhoneNumber() + "' email='" + c.getEmail() + "' street='" + a.getStreet()
+//            final String UPDATE_CONTACT_QUERY = "update contact set  name='" + name + "' phone='" + p.getNumber() + "' email='" + c.getEmail() + "' street='" + a.getStreet()
 //                    + "' city='" + a.getCity() + "' state='" + a.getState() + "' zip='" + a.getZipCode() + "' profileImage='" + c.getProfileImage() + "' where name = '" + name + "';";
 //
 //
@@ -146,7 +146,7 @@ public class DataManager {
 
 
         st.bindString(1, name);
-        st.bindString(2, p.getPhoneNumber());
+        st.bindString(2, p.getNumber());
         st.bindString(3, Integer.toString(p.getPhoneNumberType()));
         st.bindString(4, c.getEmail());
         st.bindString(5, a.getStreet());

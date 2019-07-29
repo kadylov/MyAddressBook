@@ -12,13 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/searchTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
-
         <include layout="@layout/content_main" />
 
         <!--android:layout_margin="@dimen/fab_margin"-->
@@ -33,4 +26,18 @@
         android:clickable="true"
         app:srcCompat="@android:drawable/ic_input_add" />
 
+
+    <FrameLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <com.miguelcatalan.materialsearchview.MaterialSearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

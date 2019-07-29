@@ -6,11 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
-
-import androidx.appcompat.app.AlertDialog;
 
 
 public class ViewContactDialog extends ContactDialog {
@@ -81,7 +77,7 @@ public class ViewContactDialog extends ContactDialog {
 
         if (contact.getNumberOfPhoneNumbers() > 0) {
             PhoneNumber phone = contact.getPrimaryPhoneNumber();
-            getEditTextPhoneNumber().setText(phone.getPhoneNumber());
+            getEditTextPhoneNumber().setText(phone.getNumber());
             getSpinnerPhoneType().setSelection(phone.getPhoneNumberType());
         }
 

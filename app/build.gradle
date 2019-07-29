@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -30,14 +30,13 @@ dependencies {
     // recycleview support library
     implementation 'com.android.support:recyclerview-v7:29.0.0'
 
-    // glide
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-
     // circles on images
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.google.android.material:material:1.0.0'
 
-
+    // cropping images
     implementation 'com.github.yalantis:ucrop:2.2.3-native'
+
+    // search panel
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 }

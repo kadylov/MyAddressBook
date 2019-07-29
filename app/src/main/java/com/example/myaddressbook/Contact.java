@@ -38,7 +38,7 @@ public class Contact implements Comparable<Contact> {
     }
 
     public void updatePhoneNumber(PhoneNumber phoneNumber) {
-        listOfPhoneNumbers.get(0).setPhoneNumber(phoneNumber.getPhoneNumber());
+        listOfPhoneNumbers.get(0).setPhoneNumber(phoneNumber.getNumber());
         listOfPhoneNumbers.get(0).setPhoneNumberType(phoneNumber.getPhoneNumberType());
 
     }

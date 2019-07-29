@@ -1,28 +1,25 @@
 package com.example.myaddressbook;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
+
+import android.view.inputmethod.EditorInfo;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -34,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private List<Contact> listOfContacts;
 
-    private EditText mSearchTxt;
     private FloatingActionButton fBtnAddContact;
 
     private ContactAdapter contactAdapter;
@@ -42,13 +38,16 @@ public class MainActivity extends AppCompatActivity {
 
     private DataManager dataManager;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        init();
+        listOfContacts = new ArrayList<Contact>();
+        dataManager = new DataManager(this);
+        fBtnAddContact = findViewById(R.id.fBtnAddContact);
+        reloadData();
+        initRecyclerView();
+        contactAdapter.notifyDataSetChanged();
 
 
         fBtnAddContact.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Log.d(TAG, "onCreate started.");
-        reloadData();
 
 //        ContactDialog cc = new NewContactDialog(this);
 //        cc.show(getSupportFragmentManager(), "");
@@ -71,7 +69,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // displays context menu when user long press on on of the contacts from the lsit
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                contactAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
+    }
+
+
+    // displays context menu when user long press on on of the contacts
     public void showContextMenu(final int selectedContact) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -88,17 +112,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int item) {
 
+                dialog.dismiss();
+
                 switch (item) {
                     case EDIT:                // Edit contact
                         ContactDialog contactDialog = new ViewContactDialog(MainActivity.this, true);
                         ((ViewContactDialog) contactDialog).sendSelectedContact(listOfContacts.get(selectedContact));
                         ((ViewContactDialog) contactDialog).enableAll(true);
+
+//                        dialog.dismiss();
                         contactDialog.show(getSupportFragmentManager(), "");
 
 
                         break;
 
                     case SHARE_CONTACT:       // Share contact to available messengers on the phone
+
+                        shareContactInfo(selectedContact);
+
                         break;
 
                     case DELETE:             // Delete contact
@@ -111,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
                         dialog.dismiss();
                 }
 
-                dialog.dismiss();
 
             }
         });
@@ -119,23 +149,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    public void shareContactInfo(int contactToShare) {
+
+        Contact contact = listOfContacts.get(contactToShare);
+        String contactInfo = contact.getFullName() + "\n" + contact.getPrimaryPhoneNumber().getNumber();
+
+        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject/Title");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, contactInfo);
+        startActivity(Intent.createChooser(intent, "Choose sharing option"));
+    }
+
     public void deleteContact(int contactToDelete) {
         Contact contact = listOfContacts.get(contactToDelete);
-
-//        startActivityForResult(photoPickerIntent, CHOOSE_FROM_GALLERY);
 
         dataManager.delete(contact);
         Log.i(TAG, "deleteContact()");
         reloadData();
+        contactAdapter.notifyDataSetChanged();
     }
 
-    private void init() {
-        listOfContacts = new ArrayList<Contact>();
-        dataManager = new DataManager(this);
-
-        mSearchTxt = findViewById(R.id.searchTxt);
-        fBtnAddContact = findViewById(R.id.fBtnAddContact);
-
+    private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycle_view);
         contactAdapter = new ContactAdapter(this, listOfContacts);
 
@@ -157,8 +193,9 @@ public class MainActivity extends AppCompatActivity {
 
         dataManager.update(contact, contactOldName);
 
-        listOfContacts.clear();
         reloadData();
+        contactAdapter.notifyDataSetChanged();
+
 
     }
 
@@ -166,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         if (contact != null) {
             String name = contact.getFullName();
 
-            String phone = contact.getPrimaryPhoneNumber().getPhoneNumber();
+            String phone = contact.getPrimaryPhoneNumber().getNumber();
             String phoneType = Integer.toString(contact.getPrimaryPhoneNumber().getPhoneNumberType());
             String email = contact.getEmail();
 
@@ -179,6 +216,8 @@ public class MainActivity extends AppCompatActivity {
             dataManager.insert(name, phone, phoneType, email, street, city, state, zip, profileImage);
 
             reloadData();
+            contactAdapter.notifyDataSetChanged();
+
         }
 
 
@@ -215,8 +254,6 @@ public class MainActivity extends AppCompatActivity {
 
                 listOfContacts.add(contact);
             }
-            contactAdapter.notifyDataSetChanged();
-
         }
 
     }

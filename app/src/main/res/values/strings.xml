@@ -16,6 +16,10 @@
     <string name="btn_main_menu">Main Menu</string>
     <string name="btn_update">Update</string>
 
+    <string name="lbl_edit">Edit</string>
+    <string name="lbl_share_contact">Share contact</string>
+    <string name="lbl_delete">Delete</string>
+
 
     <string-array name="phoneTypeList">
         <item>Cell</item>

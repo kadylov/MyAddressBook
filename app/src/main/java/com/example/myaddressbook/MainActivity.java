@@ -1,18 +1,28 @@
 package com.example.myaddressbook;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -38,9 +48,90 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        init();
+
+
+        fBtnAddContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "in float button listener");
+                ContactDialog newContact = new NewContactDialog(MainActivity.this);
+                newContact.show(getSupportFragmentManager(), "");
+
+            }
+        });
+
+        Log.d(TAG, "onCreate started.");
+        reloadData();
+
+//        ContactDialog cc = new NewContactDialog(this);
+//        cc.show(getSupportFragmentManager(), "");
+
+
+    }
+
+
+    // displays context menu when user long press on on of the contacts from the lsit
+    public void showContextMenu(final int selectedContact) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final int EDIT = 0, SHARE_CONTACT = 1, DELETE = 2;
+        String name = listOfContacts.get(selectedContact).getFullName();
+        if (name == null)
+            name = "AAAAA";
+
+        final String[] options = {"Edit", "Share Contact", "Delete", "Cancel"};
+        builder.setTitle(name);
+//        builder.se
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                switch (item) {
+                    case EDIT:                // Edit contact
+                        ContactDialog contactDialog = new ViewContactDialog(MainActivity.this, true);
+                        ((ViewContactDialog) contactDialog).sendSelectedContact(listOfContacts.get(selectedContact));
+                        ((ViewContactDialog) contactDialog).enableAll(true);
+                        contactDialog.show(getSupportFragmentManager(), "");
+
+
+                        break;
+
+                    case SHARE_CONTACT:       // Share contact to available messengers on the phone
+                        break;
+
+                    case DELETE:             // Delete contact
+                        Log.i(TAG, "in the showContextMenu");
+                        deleteContact(selectedContact);
+                        break;
+
+                    default:                        // cancel
+                        Log.i(TAG, "in the onClick...dismiss");
+                        dialog.dismiss();
+                }
+
+                dialog.dismiss();
+
+            }
+        });
+        builder.show();
+
+    }
+
+    public void deleteContact(int contactToDelete) {
+        Contact contact = listOfContacts.get(contactToDelete);
+
+//        startActivityForResult(photoPickerIntent, CHOOSE_FROM_GALLERY);
+
+        dataManager.delete(contact);
+        Log.i(TAG, "deleteContact()");
+        reloadData();
+    }
+
+    private void init() {
         listOfContacts = new ArrayList<Contact>();
         dataManager = new DataManager(this);
-
 
         mSearchTxt = findViewById(R.id.searchTxt);
         fBtnAddContact = findViewById(R.id.fBtnAddContact);
@@ -54,37 +145,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(contactAdapter);
-
-
-        fBtnAddContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Log.d(TAG, "in float button listener");
-                ContactDialog newContact = new NewContactDialog(MainActivity.this);
-                newContact.show(getSupportFragmentManager(), "");
-
-            }
-        });
-
-        Log.d(TAG, "onCreate started.");
-        reloadData();
-
-        ContactDialog cc = new NewContactDialog(this);
-        cc.show(getSupportFragmentManager(), "");
-
-
     }
 
     public void showContact(int contactToShow) {
-        ContactDialog dialog = new ViewContactDialog(MainActivity.this);
+        ContactDialog dialog = new ViewContactDialog(MainActivity.this, false);
         ((ViewContactDialog) dialog).sendSelectedContact(listOfContacts.get(contactToShow));
         dialog.show(getSupportFragmentManager(), "");
     }
 
     public void updateContact(Contact contact, String contactOldName) {
 
-        dataManager.update(contact,contactOldName);
+        dataManager.update(contact, contactOldName);
 
         listOfContacts.clear();
         reloadData();
@@ -138,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
                 String state = cursor.getString(i++);
                 String zip = cursor.getString(i++);
                 byte[] profileImage = cursor.getBlob(i++);
-
 
 
                 Contact contact = new Contact(name, new PhoneNumber(phone, Integer.parseInt(phoneType)), email, new Address(street, city, state, zip), profileImage);

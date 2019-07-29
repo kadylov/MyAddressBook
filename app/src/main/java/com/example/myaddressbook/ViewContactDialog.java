@@ -22,18 +22,23 @@ public class ViewContactDialog extends ContactDialog {
     private Contact contact;
     private String oldContactName;
 
+    private boolean enableFlag;
+
     private static final int xmlResource = R.layout.dialog_view_contact;
 
-    public ViewContactDialog(Activity activity) {
+    public ViewContactDialog(Activity activity, boolean enableFlag) {
         super(activity, xmlResource);
+        this.enableFlag = enableFlag;
+
+        btnEdit = getDialogView().findViewById(R.id.btnEdit);
+        btnUpdate = getDialogView().findViewById(R.id.btnUpdate);
+        btnMainMenu = getDialogView().findViewById(R.id.btnMainMenu);
     }
 
     @Override
     public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        btnEdit = getDialogView().findViewById(R.id.btnEdit);
-        btnUpdate = getDialogView().findViewById(R.id.btnUpdate);
-        btnMainMenu = getDialogView().findViewById(R.id.btnMainMenu);
+
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +69,7 @@ public class ViewContactDialog extends ContactDialog {
 
 
         loadData();
-        enableAll(false);
+        enableAll(enableFlag);
 
         return getBuilder().create();
     }
@@ -139,6 +144,11 @@ public class ViewContactDialog extends ContactDialog {
         // disable zip text field
         getEditTextZip().setEnabled(flag);
         getEditTextZip().setTextColor(Color.BLACK);
+
+        if (enableFlag == true){
+            btnEdit.setVisibility(View.GONE);
+            btnUpdate.setVisibility(View.VISIBLE);
+        }
 
     }
 

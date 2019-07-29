@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -43,11 +44,9 @@ public class NewContactDialog extends ContactDialog {
         btnAdd = getDialogView().findViewById(R.id.btnAdd);
         btnCancel = getDialogView().findViewById(R.id.btnCancel);
 
-
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 createContact();
                 dismiss();
             }
@@ -58,6 +57,10 @@ public class NewContactDialog extends ContactDialog {
                 dismiss();
             }
         });
+
+
+//        Toolbar toolbar = getView().findViewById(R.id.toolbar);
+
 
         return getBuilder().create();
     }

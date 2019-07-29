@@ -1,14 +1,20 @@
 package com.example.myaddressbook;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -50,7 +56,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
         if (img != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             holder.profileImage.setImageBitmap(bitmap);
+        }else{
+//            Intent intent = new Intent.(String.valueOf(R.drawable.profile_image));
+
         }
+
+
     }
 
     @Override
@@ -58,7 +69,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
         return listOfContacts.size();
     }
 
-    public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         CircleImageView profileImage;
         TextView txtContactName;
@@ -71,6 +82,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
 
             itemView.setClickable(true);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             Log.d(TAG, txtContactName.getText().toString());
         }
 
@@ -78,7 +90,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
         public void onClick(View view) {
 
             mainActivity.showContact(getAdapterPosition());
-
         }
+
+        @Override
+        public boolean onLongClick(View view) {
+
+
+            mainActivity.showContextMenu(getAdapterPosition());
+            return true;
+        }
+
+
     }
 }

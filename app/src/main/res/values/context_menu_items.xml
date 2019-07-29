@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="context_menu_array">
+        <item>Title</item>
+        <item>Edit</item>
+        <item>Share Contact</item>
+        <item>Delete</item>
+
+    </string-array>
+
+
+
+</resources>

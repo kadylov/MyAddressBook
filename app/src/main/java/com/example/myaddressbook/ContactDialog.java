@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -25,8 +26,6 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -36,7 +35,6 @@ public abstract class ContactDialog extends DialogFragment {
 
     private final int TAKE_PHOTO = 0;
     private final int CHOOSE_FROM_GALLERY = 1;
-    private final int CROP_IMAGE = 2;
 
     private Uri imgUri;
 
@@ -57,7 +55,6 @@ public abstract class ContactDialog extends DialogFragment {
     private View dialogView;
 
     private LayoutInflater inflater;
-
     private Activity activity;
 
     public ContactDialog(Activity activity, int inflaterResource) {

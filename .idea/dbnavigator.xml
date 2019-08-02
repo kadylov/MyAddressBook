@@ -23,27 +23,37 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes>
-      <connection connection-id="51acf670-418d-486b-acd7-cae4ec8c1a8a">
-        <schema name="main" object-types="view, table" />
-      </connection>
-    </loaded-nodes>
+    <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="51acf670-418d-486b-acd7-cae4ec8c1a8a">
-      <console name="Connection" type="STANDARD" schema="main" session="Main">select
+      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[select
     c._id,
     c.city,
     c.email,
     c.name,
     c.phone,
-    c.&quot;phoneType&quot;,
-    c.&quot;profileImage&quot;,
+    c."phoneType",
+    c."profileImage",
     c.state,
     c.street,
     c.zip
 from
-    contact c;</console>
+    contact c;]]></console>
+      <console name="Connection 1" type="STANDARD" schema="main" session="Main"><![CDATA[select
+    c._id,
+    c.city,
+    c.email,
+    c.name,
+    c.phone,
+    c."phoneType",
+    c."profileImage",
+    c.state,
+    c.street,
+    c.zip
+from
+    contact c
+    where name='sd';]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">

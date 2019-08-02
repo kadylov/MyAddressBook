@@ -1,25 +1,31 @@
 package com.example.myaddressbook;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 
@@ -27,6 +33,11 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.security.Permission;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -57,6 +68,8 @@ public abstract class ContactDialog extends DialogFragment {
 
     private LayoutInflater inflater;
     private Activity activity;
+
+    private String takenImageUrl = "";
 
     public ContactDialog(Activity activity, int inflaterResource) {
 
@@ -138,8 +151,22 @@ public abstract class ContactDialog extends DialogFragment {
 
     private void takePictureFromCamera() {
 
-        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePicture, TAKE_PHOTO);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = null;
+        try {
+            file = createImageFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        imgUri = FileProvider.getUriForFile(activity,
+                "com.example.android.fileprovider",
+                file);
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
+        intent.putExtra("return data", true);
+        startActivityForResult(intent, TAKE_PHOTO);
     }
 
 
@@ -153,11 +180,19 @@ public abstract class ContactDialog extends DialogFragment {
             switch (requestCode) {
                 case TAKE_PHOTO:
                     if (resultCode == RESULT_OK) {
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
 
-//                        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), selectedImage);
-//                        imgBtn.setBackground(bitmapDrawable);
-                        imgBtn.setImageBitmap(selectedImage);
+//                        Bundle extras = data.getExtras();
+//                        Bitmap imageBitmap = (Bitmap) extras.get("data");
+//                        imgBtn.setImageBitmap(imageBitmap);
+
+
+//                        String FILENAME = "image.png";
+//                        String PATH = "/mnt/sdcard/" + FILENAME;
+//                        File f = new File(PATH);
+//                        Uri yourUri = Uri.fromFile(f);
+
+                        cropImage(imgUri);
+
                     }
                     break;
 
@@ -165,14 +200,6 @@ public abstract class ContactDialog extends DialogFragment {
                     if (resultCode == RESULT_OK) {
 
                         imgUri = data.getData();
-                        Bitmap imgBitmap = null;
-//                        try {
-//                            imgBitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imgUri);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                        imgBtn.setImageBitmap(imgBitmap);
-
                         cropImage(imgUri);
                     }
                     break;
@@ -185,15 +212,6 @@ public abstract class ContactDialog extends DialogFragment {
                         if (uri != null) {
                             imgBtn.setImageURI(uri);
                         }
-//                        imgBtn.setImageURI(uri);
-
-//                        Bitmap imgBitmap = null;
-//                        try {
-//                            imgBitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                        imgBtn.setImageBitmap(imgBitmap);
                     }
                     break;
 
@@ -209,7 +227,6 @@ public abstract class ContactDialog extends DialogFragment {
     private void cropImage(Uri uri) {
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(activity.getCacheDir(), "temp.jpg")));
         uCrop.withMaxResultSize(400, 400).withOptions(getCropOptions());
-//        uCrop.start(getActivity());
 
         startActivityForResult(uCrop.getIntent(getContext()), UCrop.REQUEST_CROP);
 
@@ -238,6 +255,13 @@ public abstract class ContactDialog extends DialogFragment {
         byte[] array = stream.toByteArray();
 
         return array;
+    }
+
+    private Uri getProfileImageUri(Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
 
@@ -284,4 +308,22 @@ public abstract class ContactDialog extends DialogFragment {
     public CircleImageView getCircleViewProfileImage() {
         return imgBtn;
     }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        takenImageUrl = image.getAbsolutePath();
+        return image;
+    }
+
 }

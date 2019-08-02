@@ -62,19 +62,6 @@ public class DataManager {
     public void insert(String name, String phone, String phoneType, String email, String street,
                        String city, String state, String zip, byte[] profileImage) {
 
-//        try {
-//            final String INSERT_CONTACT_QUERY = "insert into contact" +
-//                    "(name, phone, phoneType, email, street, city, state, zip, profileImage) values " +
-//                    "( '" + name + "', '" + phone + "', '" + phoneType + "', '" + email + "', '" + street + "', '" + city +
-//                    "', '" + state + "', '" + zip + "',' " + profileImage + "' )";
-//            db.execSQL(INSERT_CONTACT_QUERY);
-//        } catch (SQLException e) {
-//            Log.i(TAG, "In DataManager insert method");
-//            Log.i(TAG, e.getMessage());
-//        }
-//        Log.i("info", "Added new contact " + name);
-
-
         String insert_query = "insert into contact values(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement st = db.compileStatement(insert_query);
         st.clearBindings();
@@ -93,7 +80,6 @@ public class DataManager {
 
 
     }
-
 
     public void delete(Contact contact) {
         String name = contact.getFullName();
@@ -126,24 +112,9 @@ public class DataManager {
         PhoneNumber p = c.getPrimaryPhoneNumber();
         Address a = c.getPrimaryAddress();
 
-//        try {
-//            final String UPDATE_CONTACT_QUERY = "update contact set  name='" + name + "' phone='" + p.getNumber() + "' email='" + c.getEmail() + "' street='" + a.getStreet()
-//                    + "' city='" + a.getCity() + "' state='" + a.getState() + "' zip='" + a.getZipCode() + "' profileImage='" + c.getProfileImage() + "' where name = '" + name + "';";
-//
-//
-//            db.execSQL(UPDATE_CONTACT_QUERY);
-//
-//        } catch (SQLException e) {
-//            Log.i("info", "In DataManager delete method");
-//            Log.i("info", e.getMessage());
-//        }
-//        Log.i("info", "Deleted contact " + name);
-
-
         String update_query = "update contact set  name=?, phone=?, phoneType=?, email=?, street=?, city=?, state=?, zip=?, profileImage=? where name=?";
 
         SQLiteStatement st = db.compileStatement(update_query);
-
 
         st.bindString(1, name);
         st.bindString(2, p.getNumber());
@@ -156,12 +127,32 @@ public class DataManager {
         st.bindBlob(9, c.getProfileImage());
         st.bindString(10, oldName);
 
-
         int count = st.executeUpdateDelete();
 
         Log.i(TAG, "update contact " + count);
 
 
+    }
+
+
+    public boolean findContactByName(String name) {
+        Cursor cursor = null;
+        boolean found = false;
+
+        try {
+            final String SELECT__CONTACT = "select * from contact where name='" + name + "';";
+            cursor = db.rawQuery(SELECT__CONTACT, null);
+        } catch (Exception e) {
+            Log.i(TAG, "In DataManager findContactByName method");
+            Log.i(TAG, e.getMessage());
+        }
+
+        Log.i(TAG, "Loaded data " + cursor.getCount());
+
+        if (cursor.getCount() > 0)
+            found = true;
+
+        return found;
     }
 
     /**

@@ -9,14 +9,17 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 
 import android.view.inputmethod.EditorInfo;
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private List<Contact> listOfContacts;
 
+    // this contact list will be used for restoring contacts from search filter
+    private List<Contact> backupContactList;
+
     private FloatingActionButton fBtnAddContact;
 
     private ContactAdapter contactAdapter;
@@ -43,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listOfContacts = new ArrayList<Contact>();
+
+        backupContactList = new ArrayList<Contact>();
         dataManager = new DataManager(this);
         fBtnAddContact = findViewById(R.id.fBtnAddContact);
         reloadData();
@@ -62,10 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate started.");
 
-//        ContactDialog cc = new NewContactDialog(this);
-//        cc.show(getSupportFragmentManager(), "");
-
-
     }
 
 
@@ -76,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
-
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -93,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         });
         return true;
     }
-
 
     // displays context menu when user long press on on of the contacts
     public void showContextMenu(final int selectedContact) {
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(android.content.Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject/Title");
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "That dude's phone number.");
         intent.putExtra(android.content.Intent.EXTRA_TEXT, contactInfo);
         startActivity(Intent.createChooser(intent, "Choose sharing option"));
     }
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycle_view);
-        contactAdapter = new ContactAdapter(this, listOfContacts);
+        contactAdapter = new ContactAdapter(this, listOfContacts, backupContactList);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
 
@@ -201,26 +203,35 @@ public class MainActivity extends AppCompatActivity {
 
     public void createNewContact(Contact contact) {
         if (contact != null) {
+
             String name = contact.getFullName();
 
-            String phone = contact.getPrimaryPhoneNumber().getNumber();
-            String phoneType = Integer.toString(contact.getPrimaryPhoneNumber().getPhoneNumberType());
-            String email = contact.getEmail();
+            // check whether contact with the given name exists in the database
+            if (dataManager.findContactByName(name)) {
+                String title = "Contact name '" + name + "' is already in use.";
+                String message = "Please create contact with a different name";
+                new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton(android.R.string.ok, null).show();
 
-            String street = contact.getPrimaryAddress().getStreet();
-            String city = contact.getPrimaryAddress().getCity();
-            String state = contact.getPrimaryAddress().getState();
-            String zip = contact.getPrimaryAddress().getZipCode();
-            byte[] profileImage = contact.getProfileImage();
+            } else {
 
-            dataManager.insert(name, phone, phoneType, email, street, city, state, zip, profileImage);
+                String phone = contact.getPrimaryPhoneNumber().getNumber();
+                String phoneType = Integer.toString(contact.getPrimaryPhoneNumber().getPhoneNumberType());
+                String email = contact.getEmail();
 
-            reloadData();
-            contactAdapter.notifyDataSetChanged();
+                String street = contact.getPrimaryAddress().getStreet();
+                String city = contact.getPrimaryAddress().getCity();
+                String state = contact.getPrimaryAddress().getState();
+                String zip = contact.getPrimaryAddress().getZipCode();
+                byte[] profileImage = contact.getProfileImage();
+
+                dataManager.insert(name, phone, phoneType, email, street, city, state, zip, profileImage);
+
+                reloadData();
+                contactAdapter.notifyDataSetChanged();
+
+            }
 
         }
-
-
     }
 
 
@@ -228,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
         listOfContacts.clear();
 
         Cursor cursor = dataManager.selectAll();
-
         int contactCount = cursor.getCount();
 
         Log.i("info", "Number of contact " + contactCount);
@@ -253,7 +263,9 @@ public class MainActivity extends AppCompatActivity {
                 Contact contact = new Contact(name, new PhoneNumber(phone, Integer.parseInt(phoneType)), email, new Address(street, city, state, zip), profileImage);
 
                 listOfContacts.add(contact);
+                backupContactList.add(contact);
             }
+
         }
 
     }

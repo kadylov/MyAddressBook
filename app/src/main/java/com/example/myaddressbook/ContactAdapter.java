@@ -24,13 +24,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
     private static final String TAG = "ContactAdapter";
     private MainActivity mainActivity;
     private List<Contact> listOfContacts;
-    private List<Contact> listOfContactsFull;
+    private List<Contact> backupContactList;
 
 
-    public ContactAdapter(MainActivity mainActivity, List<Contact> listOfContacts) {
+    public ContactAdapter(MainActivity mainActivity, List<Contact> listOfContacts, List<Contact> backupContactList) {
         this.mainActivity = mainActivity;
         this.listOfContacts = listOfContacts;
-        listOfContactsFull = new ArrayList<>(listOfContacts);
+        this.backupContactList = backupContactList;
     }
 
     @NonNull
@@ -75,11 +75,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
             List<Contact> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(listOfContactsFull);
+                filteredList.addAll(backupContactList);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for (Contact item : listOfContactsFull) {
+                for (Contact item : backupContactList) {
                     if (item.getFullName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }

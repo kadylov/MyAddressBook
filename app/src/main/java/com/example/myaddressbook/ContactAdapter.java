@@ -21,16 +21,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItemHolder> implements Filterable {
 
-    private static final String TAG = "ContactAdapter";
     private MainActivity mainActivity;
     private List<Contact> listOfContacts;
-    private List<Contact> backupContactList;
+    private List<Contact> filteredContactList;
 
-
-    public ContactAdapter(MainActivity mainActivity, List<Contact> listOfContacts, List<Contact> backupContactList) {
+    public ContactAdapter(MainActivity mainActivity, List<Contact> listOfContacts) {
         this.mainActivity = mainActivity;
         this.listOfContacts = listOfContacts;
-        this.backupContactList = backupContactList;
+
+        this.filteredContactList = listOfContacts;
+
     }
 
     @NonNull
@@ -44,24 +44,21 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
 
     @Override
     public void onBindViewHolder(@NonNull ContactAdapter.ListItemHolder holder, final int position) {
-        Log.d(TAG, "onBindViewHolder called.");
+//        Contact c = listOfContacts.get(position);
+        Contact c = filteredContactList.get(position);
 
-        Contact c = listOfContacts.get(position);
         holder.txtContactName.setText(c.getFullName());
 
         byte[] img = c.getProfileImage();
         if (img != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             holder.profileImage.setImageBitmap(bitmap);
-        } else {
-//            Intent intent = new Intent.(String.valueOf(R.drawable.profile_image));
-
         }
     }
 
     @Override
     public int getItemCount() {
-        return listOfContacts.size();
+        return filteredContactList.size();
     }
 
     @Override
@@ -72,30 +69,34 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ListItem
     private Filter exampleFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<Contact> filteredList = new ArrayList<>();
+//            List<Contact> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(backupContactList);
+                filteredContactList = listOfContacts;
+//                filteredList.addAll(filteredContactList);
             } else {
+                List<Contact> filteredList = new ArrayList<>();
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for (Contact item : backupContactList) {
+                for (Contact item : filteredContactList) {
                     if (item.getFullName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }
+                filteredContactList = filteredList;
             }
 
             FilterResults results = new FilterResults();
-            results.values = filteredList;
+            results.values = filteredContactList;
 
             return results;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            listOfContacts.clear();
-            listOfContacts.addAll((List) results.values);
+//            listOfContacts.clear();
+//            listOfContacts.addAll((List) results.values);
+            filteredContactList = (List<Contact>) results.values;
             notifyDataSetChanged();
         }
     };

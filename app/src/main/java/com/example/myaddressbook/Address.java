@@ -52,4 +52,12 @@ public class Address {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+
+
+    public void setAddress(Address newAddress) {
+        this.street = newAddress.getStreet();
+        this.city = newAddress.getCity();
+        this.state = newAddress.getState();
+        this.zipCode = newAddress.getZipCode();
+    }
 }

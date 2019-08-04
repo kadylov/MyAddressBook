@@ -1,11 +1,8 @@
 package com.example.myaddressbook;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -14,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -23,8 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
@@ -34,7 +28,6 @@ import com.yalantis.ucrop.UCrop;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.security.Permission;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -49,8 +42,6 @@ public abstract class ContactDialog extends DialogFragment {
     private final int CHOOSE_FROM_GALLERY = 1;
 
     private Uri imgUri;
-
-
     private CircleImageView imgBtn;
 
     private EditText txtFullName;
@@ -80,7 +71,7 @@ public abstract class ContactDialog extends DialogFragment {
         dialogView = inflater.inflate(inflaterResource, null);
         init();
 
-        builder.setView(dialogView).setMessage("");
+        builder.setView(dialogView);
         imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,7 +150,6 @@ public abstract class ContactDialog extends DialogFragment {
             e.printStackTrace();
         }
 
-
         imgUri = FileProvider.getUriForFile(activity,
                 "com.example.android.fileprovider",
                 file);
@@ -180,16 +170,6 @@ public abstract class ContactDialog extends DialogFragment {
             switch (requestCode) {
                 case TAKE_PHOTO:
                     if (resultCode == RESULT_OK) {
-
-//                        Bundle extras = data.getExtras();
-//                        Bitmap imageBitmap = (Bitmap) extras.get("data");
-//                        imgBtn.setImageBitmap(imageBitmap);
-
-
-//                        String FILENAME = "image.png";
-//                        String PATH = "/mnt/sdcard/" + FILENAME;
-//                        File f = new File(PATH);
-//                        Uri yourUri = Uri.fromFile(f);
 
                         cropImage(imgUri);
 
@@ -256,14 +236,6 @@ public abstract class ContactDialog extends DialogFragment {
 
         return array;
     }
-
-    private Uri getProfileImageUri(Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(activity.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
 
     public EditText getEditTextFulltName() {
         return txtFullName;

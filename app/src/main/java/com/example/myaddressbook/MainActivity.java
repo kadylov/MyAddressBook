@@ -9,17 +9,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 
 import android.view.inputmethod.EditorInfo;
@@ -31,11 +27,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
     private List<Contact> listOfContacts;
-
-    // this contact list will be used for restoring contacts from search filter
-    private List<Contact> backupContactList;
 
     private FloatingActionButton fBtnAddContact;
 
@@ -50,26 +42,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listOfContacts = new ArrayList<Contact>();
 
-        backupContactList = new ArrayList<Contact>();
         dataManager = new DataManager(this);
         fBtnAddContact = findViewById(R.id.fBtnAddContact);
         reloadData();
         initRecyclerView();
         contactAdapter.notifyDataSetChanged();
 
-
         fBtnAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "in float button listener");
                 ContactDialog newContact = new NewContactDialog(MainActivity.this);
                 newContact.show(getSupportFragmentManager(), "");
-
             }
         });
-
-        Log.d(TAG, "onCreate started.");
-
     }
 
 
@@ -90,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 contactAdapter.getFilter().filter(newText);
+                contactAdapter.notifyDataSetChanged();
                 return false;
             }
         });
@@ -104,11 +91,10 @@ public class MainActivity extends AppCompatActivity {
         final int EDIT = 0, SHARE_CONTACT = 1, DELETE = 2;
         String name = listOfContacts.get(selectedContact).getFullName();
         if (name == null)
-            name = "AAAAA";
+            name = "";
 
         final String[] options = {"Edit", "Share Contact", "Delete", "Cancel"};
         builder.setTitle(name);
-//        builder.se
         builder.setItems(options, new DialogInterface.OnClickListener() {
 
             @Override
@@ -124,27 +110,20 @@ public class MainActivity extends AppCompatActivity {
 
 //                        dialog.dismiss();
                         contactDialog.show(getSupportFragmentManager(), "");
-
-
                         break;
 
                     case SHARE_CONTACT:       // Share contact to available messengers on the phone
 
                         shareContactInfo(selectedContact);
-
                         break;
 
                     case DELETE:             // Delete contact
-                        Log.i(TAG, "in the showContextMenu");
                         deleteContact(selectedContact);
                         break;
 
                     default:                        // cancel
-                        Log.i(TAG, "in the onClick...dismiss");
                         dialog.dismiss();
                 }
-
-
             }
         });
         builder.show();
@@ -168,14 +147,13 @@ public class MainActivity extends AppCompatActivity {
         Contact contact = listOfContacts.get(contactToDelete);
 
         dataManager.delete(contact);
-        Log.i(TAG, "deleteContact()");
         reloadData();
         contactAdapter.notifyDataSetChanged();
     }
 
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycle_view);
-        contactAdapter = new ContactAdapter(this, listOfContacts, backupContactList);
+        contactAdapter = new ContactAdapter(this, listOfContacts);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
 
@@ -197,8 +175,6 @@ public class MainActivity extends AppCompatActivity {
 
         reloadData();
         contactAdapter.notifyDataSetChanged();
-
-
     }
 
     public void createNewContact(Contact contact) {
@@ -228,9 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
                 reloadData();
                 contactAdapter.notifyDataSetChanged();
-
             }
-
         }
     }
 
@@ -241,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = dataManager.selectAll();
         int contactCount = cursor.getCount();
 
-        Log.i("info", "Number of contact " + contactCount);
         int i = 0;
         if (contactCount > 0) {
             listOfContacts.clear();
@@ -263,7 +236,6 @@ public class MainActivity extends AppCompatActivity {
                 Contact contact = new Contact(name, new PhoneNumber(phone, Integer.parseInt(phoneType)), email, new Address(street, city, state, zip), profileImage);
 
                 listOfContacts.add(contact);
-                backupContactList.add(contact);
             }
 
         }

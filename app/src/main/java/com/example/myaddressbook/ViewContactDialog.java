@@ -34,8 +34,6 @@ public class ViewContactDialog extends ContactDialog {
     @Override
     public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
 
-
-
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,7 +57,6 @@ public class ViewContactDialog extends ContactDialog {
             public void onClick(View view) {
 
                 updateContactInfo();
-                dismiss();
             }
         });
 
@@ -141,7 +138,7 @@ public class ViewContactDialog extends ContactDialog {
         getEditTextZip().setEnabled(flag);
         getEditTextZip().setTextColor(Color.BLACK);
 
-        if (enableFlag == true){
+        if (enableFlag == true) {
             btnEdit.setVisibility(View.GONE);
             btnUpdate.setVisibility(View.VISIBLE);
         }
@@ -154,17 +151,19 @@ public class ViewContactDialog extends ContactDialog {
 
     public void updateContactInfo() {
 
+        String name = getEditTextFulltName().getText().toString();
+
         PhoneNumber newPhoneNumber = new PhoneNumber();
-        newPhoneNumber.setPhoneNumber(getEditTextPhoneNumber().getText().toString());
+        newPhoneNumber.setNumber(getEditTextPhoneNumber().getText().toString());
         newPhoneNumber.setPhoneNumberType(getSpinnerPhoneType().getSelectedItemPosition());
 
         Address newAddress = new Address();
         newAddress.setStreet(getEditTextStreet().getText().toString());
         newAddress.setCity(getEditTextCity().getText().toString());
-        newAddress.setState(getEditTextStreet().getText().toString());
+        newAddress.setState(getEditTextState().getText().toString());
         newAddress.setZipCode(getEditTextZip().getText().toString());
 
-        contact.setFullName(getEditTextFulltName().getText().toString());
+        contact.setFullName(name);
         contact.setEmail(getEditTextEmail().getText().toString());
         contact.updateAddress(newAddress);
         contact.updatePhoneNumber(newPhoneNumber);
@@ -173,7 +172,15 @@ public class ViewContactDialog extends ContactDialog {
 
         contact.setProfileImage(profileImg);
 
-        MainActivity callingActivity = (MainActivity) getActivity();
-        callingActivity.updateContact(contact, oldContactName);
+        if (name == null || name.equals("")) {
+            getEditTextFulltName().setError("name is required");
+        } else {
+            MainActivity callingActivity = (MainActivity) getActivity();
+            callingActivity.updateContact(contact, oldContactName);
+            dismiss();
+
+        }
+
+
     }
 }

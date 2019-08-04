@@ -8,6 +8,8 @@ public class Contact implements Comparable<Contact> {
     private String fullName = "";
     private String email = "";
     private byte[] profileImage = {0};
+    private final int PRIMARY_ADDRESS = 0;
+    private final int PRIMARY_PHONE = 0;
 
     private List<PhoneNumber> listOfPhoneNumbers = new ArrayList<PhoneNumber>();
     private List<Address> listOfAddresses = new ArrayList<Address>();
@@ -38,9 +40,7 @@ public class Contact implements Comparable<Contact> {
     }
 
     public void updatePhoneNumber(PhoneNumber phoneNumber) {
-        listOfPhoneNumbers.get(0).setPhoneNumber(phoneNumber.getNumber());
-        listOfPhoneNumbers.get(0).setPhoneNumberType(phoneNumber.getPhoneNumberType());
-
+        listOfPhoneNumbers.get(PRIMARY_PHONE).setPhoneNumber(phoneNumber);
     }
 
     public void deletePhoneNumber(PhoneNumber phoneNumber) {
@@ -57,8 +57,7 @@ public class Contact implements Comparable<Contact> {
     }
 
     public void updateAddress(Address newAddress) {
-        listOfAddresses.clear();
-        listOfAddresses.add(newAddress);
+        listOfAddresses.get(PRIMARY_ADDRESS).setAddress(newAddress);
     }
 
     public int getNumberOfAddresses() {

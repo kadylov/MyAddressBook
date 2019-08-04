@@ -10,9 +10,7 @@ import android.util.Log;
 
 public class DataManager {
 
-    private static final String TAG = "DataManager";
     private SQLiteDatabase db;
-
 
     /**
      * DataManager constructor which initializes the database.
@@ -38,11 +36,9 @@ public class DataManager {
             final String SELECT_ALL_CONTACTS = "select * from contact order by name";
             cursor = db.rawQuery(SELECT_ALL_CONTACTS, null);
         } catch (Exception e) {
-            Log.i(TAG, "In DataManager selectAll method");
-            Log.i(TAG, e.getMessage());
+            Log.i("selectAll", e.getMessage());
         }
 
-        Log.i(TAG, "Loaded data " + cursor.getCount());
         return cursor;
     }
 
@@ -123,15 +119,11 @@ public class DataManager {
         st.bindString(5, a.getStreet());
         st.bindString(6, a.getCity());
         st.bindString(7, a.getState());
-        st.bindString(8, a.getState());
+        st.bindString(8, a.getZipCode());
         st.bindBlob(9, c.getProfileImage());
         st.bindString(10, oldName);
 
         int count = st.executeUpdateDelete();
-
-        Log.i(TAG, "update contact " + count);
-
-
     }
 
 
@@ -143,11 +135,8 @@ public class DataManager {
             final String SELECT__CONTACT = "select * from contact where name='" + name + "';";
             cursor = db.rawQuery(SELECT__CONTACT, null);
         } catch (Exception e) {
-            Log.i(TAG, "In DataManager findContactByName method");
-            Log.i(TAG, e.getMessage());
+            Log.i("findContactByName", e.getMessage());
         }
-
-        Log.i(TAG, "Loaded data " + cursor.getCount());
 
         if (cursor.getCount() > 0)
             found = true;
@@ -194,8 +183,7 @@ public class DataManager {
 
                 db.execSQL(CREATE_TABLE_QUERY);
             } catch (SQLException e) {
-                Log.i(TAG, "In DataManager onCreate method");
-                Log.i(TAG, e.getMessage());
+                Log.i("In DataManager onCreate", e.getMessage());
             }
 
         }

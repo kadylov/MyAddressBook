@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -11,7 +11,8 @@
         android:maxWidth="150dp"
         android:maxHeight="150dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:baselineAlignBottom="true"
         android:clickable="true"
         android:src="@drawable/profile_image" />
@@ -48,9 +49,9 @@
                     style="@style/MarginForEditText"
 
                     android:layout_width="200dp"
-                    android:layout_marginRight="5dp"
                     android:drawableStart="@drawable/ic_phone_black_24dp"
                     android:drawableLeft="@drawable/ic_phone_black_24dp"
+                    android:layout_marginRight="5dp"
 
                     android:hint="@string/hint_phone"
                     android:imeOptions="actionNext"
@@ -61,14 +62,14 @@
                     android:id="@+id/spnrPhoneType"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_marginRight="30dp"
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/round_edges"
                     android:ems="10"
                     android:entries="@array/phoneTypeList"
-                    android:padding="10dp" />
+                    android:padding="5dp" />
 
             </LinearLayout>
 
@@ -169,4 +170,4 @@
     </ScrollView>
 
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

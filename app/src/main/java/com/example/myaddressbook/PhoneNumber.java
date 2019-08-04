@@ -26,8 +26,13 @@ public class PhoneNumber implements Comparable<PhoneNumber> {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void setPhoneNumber(PhoneNumber newPhoneNumber) {
+        this.phoneNumber=newPhoneNumber.getNumber();
+        this.phoneNumberType=newPhoneNumber.phoneNumberType;
     }
 
     public int getPhoneNumberType() {
